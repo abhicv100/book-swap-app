@@ -1,0 +1,82 @@
+package com.bits.userservice.Config;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityWebConfig {
+
+    String secret = "gZcLm+oqbX2jqZTiSt/LmdFsDZItipAMM3PYRMc4kJs=";
+
+    @Bean
+    public SecretKey getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+        return key;
+    }
+
+    @Order(1)
+    @Bean
+    public SecurityFilterChain securityFilterChainHttpBasic(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.disable())
+            .csrf(csrf -> csrf.disable())
+            .httpBasic(Customizer.withDefaults())
+            .securityMatcher("/auth")
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // .userDetailsService(userService)
+            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());    
+        return http.build();
+    }
+
+    @Order(2)
+    @Bean
+    public SecurityFilterChain securityFilterChainBearerToken(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.disable())
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()))
+            .securityMatcher("/**")
+            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+        return http.build();
+    }
+
+    @Bean
+	public UserDetailsService userDetailsService() {
+		UserDetails user = User.withUsername("user")
+                            .password("{noop}password")
+            				.build();
+		return new InMemoryUserDetailsManager(user);
+    }
+    
+    // @Bean
+    // public static PasswordEncoder passwordEncoder() {
+    //     return new BCryptPasswordEncoder();
+    // }
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withSecretKey(getSignInKey()).build();
+    }    
+}
