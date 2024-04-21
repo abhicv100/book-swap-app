@@ -2,6 +2,8 @@ package com.bits.userservice.Config;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -29,6 +32,9 @@ public class SecurityWebConfig {
 
     String secret = "gZcLm+oqbX2jqZTiSt/LmdFsDZItipAMM3PYRMc4kJs=";
 
+    @Autowired
+    UserDetailsService userDetailsService;
+
     @Bean
     public SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -44,7 +50,7 @@ public class SecurityWebConfig {
             .httpBasic(Customizer.withDefaults())
             .securityMatcher("/auth")
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // .userDetailsService(userService)
+            .userDetailsService(userDetailsService)
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());    
         return http.build();
     }
@@ -58,22 +64,23 @@ public class SecurityWebConfig {
             .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
             .exceptionHandling(ex -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()))
             .securityMatcher("/**")
-            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
 
-    @Bean
-	public UserDetailsService userDetailsService() {
-		UserDetails user = User.withUsername("user")
-                            .password("{noop}password")
-            				.build();
-		return new InMemoryUserDetailsManager(user);
-    }
-    
     // @Bean
-    // public static PasswordEncoder passwordEncoder() {
-    //     return new BCryptPasswordEncoder();
+	// public UserDetailsService userDetailsService() {
+	// 	UserDetails user = User.withUsername("user")
+    //                         .password("password")
+    //         				.build();
+	// 	return new InMemoryUserDetailsManager(user);
     // }
+    
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        // return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
+    }
 
     @Bean
     JwtDecoder jwtDecoder() {
