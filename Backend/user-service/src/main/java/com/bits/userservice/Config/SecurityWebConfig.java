@@ -64,7 +64,8 @@ public class SecurityWebConfig {
             .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
             .exceptionHandling(ex -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()))
             .securityMatcher("/**")
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+            // .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
 
