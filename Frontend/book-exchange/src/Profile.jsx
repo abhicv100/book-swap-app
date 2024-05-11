@@ -1,7 +1,14 @@
 import React from 'react';
 import './Profile.css'; // Import CSS file for styling
+import { getUserIdFromAccessToken } from "./Util";
 
 export const Profile = () => {
+
+  const userId = getUserIdFromAccessToken()
+
+  // call to get the user details
+  
+
   // Sample user data
   const userData = {
     username: 'Jane Doe',

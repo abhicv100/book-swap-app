@@ -1,5 +1,7 @@
 package com.bits.userservice.Config;
 
+import java.util.Arrays;
+
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -42,10 +47,22 @@ public class SecurityWebConfig {
         return key;
     }
 
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        // source.registerCorsConfiguration("/user", configuration);
+        return source;
+    }
+
     @Order(1)
     @Bean
     public SecurityFilterChain securityFilterChainHttpBasic(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.disable())
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .httpBasic(Customizer.withDefaults())
             .securityMatcher("/auth")
@@ -58,14 +75,14 @@ public class SecurityWebConfig {
     @Order(2)
     @Bean
     public SecurityFilterChain securityFilterChainBearerToken(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.disable())
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
             .exceptionHandling(ex -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()))
             .securityMatcher("/**")
-            .authorizeHttpRequests(auth -> auth.requestMatchers("/user").permitAll().anyRequest().authenticated());
-            // .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            // .authorizeHttpRequests(auth -> auth.requestMatchers("/user").permitAll().anyRequest().authenticated());
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
 

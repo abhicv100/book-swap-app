@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -30,6 +31,7 @@ public class UserController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @CrossOrigin
     @PostMapping("/user")
     public ResponseEntity<Map<String, Object>> createUser(@RequestBody UserEntity entity) {
         Map<String, Object> result = new HashMap<>();        
@@ -51,10 +53,11 @@ public class UserController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> getAnyUserDetails(@PathVariable(required = true) String userId) {
         try {
-            Map<String, Object> result = new HashMap<>();        
+            Map<String, Object> result = new HashMap<>();
 
             var maybeUser = userDao.findById(userId);
     

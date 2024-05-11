@@ -5,6 +5,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import BookListingForm from './BookListingForm';
 import booksDataCsv from './books.csv'; // Import CSV file
 import * as Papa from 'papaparse'; // Import PapaParse library for CSV parsing
+import { useNavigate } from 'react-router-dom';
 
 export const Home = ({ onViewProfile, onSignOut }) => {
   const [booksData, setBooksData] = useState([]);
@@ -14,13 +15,15 @@ export const Home = ({ onViewProfile, onSignOut }) => {
     setShowBookListingForm(!showBookListingForm);
   };
 
+  let navigate = useNavigate()
+
   return (
     <div className="home-container">
       <div className="top-bar">
         <h1 className="title">Home</h1>
         <div className="user-profile">
           <FontAwesomeIcon icon={faUser} size="lg" />
-          <button onClick={onViewProfile} className="view-profile-button">View Profile</button>
+          <button onClick={(e) => {navigate('/profile')}} className="view-profile-button">View Profile</button>
           <button onClick={onSignOut} className="sign-out-button">Sign Out</button>
         </div>
       </div>

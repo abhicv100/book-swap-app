@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
@@ -30,6 +31,7 @@ public class AuthController {
     @Autowired
     UserDao userDao;
 
+    @CrossOrigin
     @PostMapping("/auth")
     public ResponseEntity<Map<String, Object>> authenticateUser() {
         Map<String, Object> result = new HashMap<>();
