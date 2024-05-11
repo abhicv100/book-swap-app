@@ -7,7 +7,7 @@ import booksDataCsv from './books.csv'; // Import CSV file
 import * as Papa from 'papaparse'; // Import PapaParse library for CSV parsing
 import { useNavigate } from 'react-router-dom';
 
-export const Home = ({ onViewProfile, onSignOut }) => {
+export const Home = () => {
   const [booksData, setBooksData] = useState([]);
   const [showBookListingForm, setShowBookListingForm] = useState(false); // New state for showing book listing form
 
@@ -17,14 +17,40 @@ export const Home = ({ onViewProfile, onSignOut }) => {
 
   let navigate = useNavigate()
 
+  const [isUserSignedIn, setUserSignedIn] = useState(false)
+
+  // checking if user have signed in by checking the stored access token
+  useEffect(() => {
+    if (localStorage.getItem('access-token') != null) {
+      setUserSignedIn(true)
+    }
+  }, [])
+
+  const onSignOut = () => {
+    localStorage.removeItem('access-token')
+    setUserSignedIn(false)
+  }
+
   return (
     <div className="home-container">
       <div className="top-bar">
         <h1 className="title">Home</h1>
         <div className="user-profile">
-          <FontAwesomeIcon icon={faUser} size="lg" />
-          <button onClick={(e) => {navigate('/profile')}} className="view-profile-button">View Profile</button>
-          <button onClick={onSignOut} className="sign-out-button">Sign Out</button>
+
+          {isUserSignedIn &&
+            (<div>
+              <FontAwesomeIcon icon={faUser} size="lg" />
+              <button onClick={(e) => { navigate('/profile') }} className="view-profile-button">View Profile</button>
+              <button onClick={onSignOut} className="sign-out-button">Sign Out</button>
+            </div>)
+          }
+
+          {!isUserSignedIn &&
+            (<div>
+              <button onClick={(e) => { navigate('/login') }} className="view-profile-button">Login</button>
+            </div>)
+          }
+
         </div>
       </div>
       <div className="search-container">

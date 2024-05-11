@@ -1,13 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Profile.css'; // Import CSS file for styling
 import { getUserIdFromAccessToken } from "./Util";
 
 export const Profile = () => {
 
+  const [username, setUsername] = useState('')
+
   const userId = getUserIdFromAccessToken()
 
+  useEffect(() => {
+    if (userId != null) {
+      const url = 'http://localhost:8003/user/' + userId
+      fetch(url, { method: 'GET' })
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json()
+          } else {
+            throw Error(response.status)
+          }
+        })
+        .then((data) => {
+          console.log(data)
+          setUsername(data['data']['firstName'] + ' ' + data['data']['lastName'])
+        })
+        .catch((error) => { console.log(error) })
+    }
+  }, [])
+
+
   // call to get the user details
-  
+
 
   // Sample user data
   const userData = {
@@ -24,7 +46,8 @@ export const Profile = () => {
     <div className="profile-container">
       <h1 className="profile-title">Profile</h1>
       <div className="user-details">
-        <p><strong>Username:</strong> {userData.username}</p>
+        {/* <p><strong>Username:</strong> {userData.username}</p> */}
+        <p><strong>Username:</strong> {username}</p>
         <p><strong>Favorite Genre:</strong> {userData.favoriteGenre}</p>
       </div>
       <div className="books-owned">
