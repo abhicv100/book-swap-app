@@ -1,13 +1,14 @@
 import React from 'react';
-import {booksData} from './Booklist'
+import { useLoaderData } from 'react-router-dom';
+import { booksData } from './Home';
 
+export function loadBookDetails({params}) {
+  return booksData[params.bookId]
+}
 
-function BookDetailsPage({ match }) {
-  // Retrieve the book title from the URL parameters
-  let title = "A Clockwork Orange"
+export function BookDetailsPage() {
 
-  // Find the book details from the booksData array based on the title
-  const book = booksData.find(book => book.title === title);
+  const book = useLoaderData()
 
   if (!book) {
     return <div>Book not found</div>;
@@ -43,5 +44,3 @@ function BookDetailsPage({ match }) {
     </div>
   );
 }
-
-export default BookDetailsPage;
