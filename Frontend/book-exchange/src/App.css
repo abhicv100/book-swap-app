@@ -75,3 +75,79 @@ form button {
 form button:hover {
   opacity: 0.8;
 }
+
+.book-tile {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+.book-tile img {
+  width: 100px; /* Adjust as needed */
+  height: auto;
+  margin-right: 10px;
+}
+
+.book-details {
+  flex: 1;
+}
+
+.book-details h2 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.book-details p {
+  margin: 0;
+}
+
+.book-detail-tile {
+  max-width: 600px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the book details horizontally */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a shadow for a tile-like appearance */
+  text-align: center; /* Center align text */
+}
+
+.book-detail-tile h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.book-detail-tile img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.book-detail-tile p {
+  margin-bottom: 10px;
+}
+
+.book-detail-tile ul {
+  list-style: none;
+  padding: 0;
+}
+
+.book-detail-tile li {
+  margin-bottom: 10px;
+}
+
+.book-detail-tile button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.book-detail-tile button:hover {
+  background-color: #0056b3;
+}
