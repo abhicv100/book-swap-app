@@ -12,6 +12,7 @@ import { Register } from './Register';
 import { Home } from './Home';
 import Profile from './Profile'; // Import the Profile component
 import {BookDetailsPage, loadBookDetails} from './Bookdetails';
+import { SwapRequestPage } from './SwapRequestPage';
 
 function App() {
 
@@ -31,6 +32,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile/>
+    },
+    {
+      path: "/swaprequest",
+      element: <SwapRequestPage/>
     },
     {
       path: "/book/:bookId",

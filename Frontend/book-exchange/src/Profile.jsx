@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css'; // Import CSS file for styling
 import { getUserIdFromAccessToken } from "./Util";
+import { BookGrid } from './Booklist';
 
 export const Profile = () => {
 
-  const [username, setUsername] = useState('')
+  const [user, setUser] = useState('')
 
   const userId = getUserIdFromAccessToken()
 
+  const [userContrbutedBooks, setUserContributedBooks] = useState([])
+
   useEffect(() => {
     if (userId != null) {
-      const url = 'http://localhost:8003/user/' + userId
-      fetch(url, { method: 'GET' })
+      const userDataUrl = 'http://localhost:8003/user/' + userId
+      fetch(userDataUrl, { method: 'GET' })
         .then((response) => {
           if (response.status == 200) {
             return response.json()
@@ -21,49 +24,38 @@ export const Profile = () => {
         })
         .then((data) => {
           console.log(data)
-          setUsername(data['data']['firstName'] + ' ' + data['data']['lastName'])
+          setUser(data['data'])
+        })
+        .catch((error) => { console.log(error) })
+
+        const userBooksUrl = 'http://localhost:8080/api/book?userId=' + userId
+
+        // fetch book contributed by the user
+        fetch(userBooksUrl, { method: 'GET' })
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json()
+          } else {
+            throw Error(response.status)
+          }
+        })
+        .then((data) => {
+          setUserContributedBooks(data)
         })
         .catch((error) => { console.log(error) })
     }
   }, [])
 
-
-  // call to get the user details
-
-
-  // Sample user data
-  const userData = {
-    username: 'Jane Doe',
-    favoriteGenre: 'Fiction',
-    booksOwned: [
-      { title: 'To Kill a Mockingbird', image: './images/book1.jpg', author: 'Harper Lee', condition: 'Good' },
-      { title: 'Harry Potter and the Sorcerer\'s Stone', image: './images/book2.jpg', author: 'J.K. Rowling', condition: 'New' },
-      { title: 'The Great Gatsby', image: './images/book3.jpg', author: 'F. Scott Fitzgerald', condition: 'Fair' }
-    ]
-  };
-
   return (
     <div className="profile-container">
       <h1 className="profile-title">Profile</h1>
       <div className="user-details">
-        {/* <p><strong>Username:</strong> {userData.username}</p> */}
-        <p><strong>Username:</strong> {username}</p>
-        <p><strong>Favorite Genre:</strong> {userData.favoriteGenre}</p>
+        <p><strong>Username:</strong> {user.firstName + ' ' + user.lastName}</p>
+        <p><strong>Emaild:</strong> {user.emailId}</p>
       </div>
       <div className="books-owned">
         <h2>Books Owned</h2>
-        <div className="book-tiles">
-          {userData.booksOwned.map((book, index) => (
-            <div key={index} className="book-tile">
-              <img src={book.image} alt={book.title} className="book-image" />
-              <div className="book-details">
-                <p className="book-title">{book.title}</p>
-                <p className="book-author"><strong>Author:</strong> {book.author}</p>
-                <p className="book-condition"><strong>Condition:</strong> {book.condition}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <BookGrid booksData={userContrbutedBooks}/>
       </div>
     </div>
   );

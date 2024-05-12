@@ -1,43 +1,77 @@
 import React, { useState } from 'react';
+import { getUserIdFromAccessToken } from './Util';
+
+import './Home.css'
 
 const BookListingForm = () => {
+
+  const userId = getUserIdFromAccessToken()
+
   const [formData, setFormData] = useState({
-    title: '',
+    name: '',
     author: '',
     genre: '',
     condition: '',
-    availability: ''
+    release_year: '',
+    description: '',
+    contributedBy: '',
+    image_url: ''
   });
 
-  const { title, author, genre, condition, availability } = formData;
+  const { name, author, genre, condition, release_year, description } = formData;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, contributedBy: userId, image_url: 'https://no-image.png' });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
-    // Add logic here to send data to the server
+
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+
+    fetch('http://localhost:8080/api/book', {method: 'POST', body: JSON.stringify(formData), headers: headers})
+      .then((response) => {
+        if(response.status == 200) {
+          alert('book submitted')          
+        }
+      })
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>List a Book for Exchange</h2>
-      <label>
-        Title:
-        <input type="text" name="title" value={title} onChange={handleChange} required />
-      </label>
-      <label>
-        Author:
+    <form className="book-submit-form" onSubmit={handleSubmit}>
+      <h2>Submit a book for exchange</h2>
+
+      <div className="book-submit-form-input">
+        <label>Title</label>
+        <input type="text" id="name" name="name" value={name} onChange={handleChange} required />
+      </div>
+
+      <div className="book-submit-form-input">
+        <label>Author</label>
         <input type="text" name="author" value={author} onChange={handleChange} required />
-      </label>
-      <label>
-        Genre:
+      </div>
+
+      <div className="book-submit-form-input">
+        <label>Genre</label>
         <input type="text" name="genre" value={genre} onChange={handleChange} required />
-      </label>
-      <label>
-        Condition:
+      </div>
+
+      <div className="book-submit-form-input">
+        <label>Year</label>
+        <input type="text" name="release_year" value={release_year} onChange={handleChange} required />
+      </div>
+
+      <div className="book-submit-form-input">
+        <label>Description</label>
+        {/* <input type="text" name="description" value={description} onChange={handleChange} required /> */}
+        <textarea name="description" value={description} onChange={handleChange} rows="4" cols="50"></textarea>
+      </div>
+
+      <div className="book-submit-form-input">
+        <label>Condition</label>
         <select name="condition" value={condition} onChange={handleChange} required>
           <option value="">Select Condition</option>
           <option value="new">New</option>
@@ -45,15 +79,8 @@ const BookListingForm = () => {
           <option value="fair">Fair</option>
           <option value="poor">Poor</option>
         </select>
-      </label>
-      <label>
-        Availability:
-        <select name="availability" value={availability} onChange={handleChange} required>
-          <option value="">Select Availability</option>
-          <option value="available">Available</option>
-          <option value="unavailable">Unavailable</option>
-        </select>
-      </label>
+      </div>
+
       <button type="submit">Submit Book</button>
     </form>
   );
