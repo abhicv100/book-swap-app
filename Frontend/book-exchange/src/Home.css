@@ -1,0 +1,93 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.title {
+  margin: 0;
+  font-size: 3rem;
+}
+
+.options-bar {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-container {
+  text-align: center;
+  margin-top: 20px;
+  display: flex;
+  width: 40%;
+}
+
+.search-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex-grow: 1;
+}
+
+.search-button {
+  margin-left: 10px;
+  padding: 10 px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.book-submit-form {
+  margin-top: 30px;
+  display: flex;
+  border: 1px solid;
+  padding: 20px;
+  max-width: 300px;
+  min-width: 500px;
+  border-radius: 10px;
+}
+
+.book-submit-form button {
+  width: 25%;
+  margin-top: 20px;
+}
+
+.book-submit-form-input {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+}
+
+.book-submit-form-input label {
+  width: 18%;
+}
+
+.book-submit-form-input input {
+  flex-grow: 1;
+}
+
+.book-submit-form-input textarea {
+  flex-grow: 1;
+}
+
+.book-submit-form-input select {
+  border-radius: 10px;
+}
