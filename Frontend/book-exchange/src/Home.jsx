@@ -3,12 +3,11 @@ import './Home.css'; // Import CSS file for styling
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import BookListingForm from './BookListingForm';
-import booksDataCsv from './books.csv'; // Import CSV file
-import * as Papa from 'papaparse'; // Import PapaParse library for CSV parsing
+import BookGrid from './Booklist'; // Import BookExchangePlatform component
+import { Router } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
-  const [booksData, setBooksData] = useState([]);
   const [showBookListingForm, setShowBookListingForm] = useState(false); // New state for showing book listing form
 
   const toggleBookListingForm = () => {
@@ -59,6 +58,7 @@ export const Home = () => {
       </div>
       <button onClick={toggleBookListingForm} className="list-book-button">List a Book</button> {/* Button to toggle the book listing form */}
       {showBookListingForm && <BookListingForm />} {/* Conditionally render the book listing form */}
+      <BookGrid /> {/* Render the BookExchangePlatform component */}
     </div>
   );
 }
